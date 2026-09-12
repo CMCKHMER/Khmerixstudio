@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <script>
+        (function() {
+            var saved = localStorage.getItem('kx-theme');
+            if (saved !== 'light') {
+                document.documentElement.classList.add('dark');
+            }
+            if (localStorage.getItem('kx-gothic') === 'on') {
+                document.documentElement.classList.add('gothic');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f0f4f8">
+    <meta name="description" content="KHMERIX Studio — AI Music Highlights. Showcasing the best AI-generated music from our community.">
+    <title>AI Music Highlights — KHMERIX Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        kx: {
+                            bg: '#f0f4f8', surface: '#ffffff', card: '#ffffff',
+                            border: '#cce4ff', muted: '#94a3b8', text: '#475569',
+                            pink: '#0ea5e9', rose: '#38bdf8', cyan: '#0284c7',
+                            teal: '#0d9488', violet: '#6366f1', gold: '#f59e0b',
+                            acid: '#34d399', white: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Syne', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f8fafc;
+            color: #334155;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background: url('bg-landing.jpg') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: -2;
+        }
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, rgba(248,250,252,0.85) 0%, rgba(240,249,255,0.80) 50%, rgba(224,242,254,0.88) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+        ::selection { background: #0ea5e9; color: white; }
+
+        /* ── Nav ── */
+        .landing-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            background: rgba(255,255,255,.72);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(204,228,255,.45);
+            box-shadow: 0 2px 20px rgba(14,165,233,0.06);
+        }
+        .nav-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px; font-weight: 500;
+            color: #475569;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all .2s;
+            text-decoration: none;
+        }
+        .nav-link:hover { color: #0284c7; background: rgba(14,165,233,.06); }
+        .nav-link.active { color: #0284c7; background: rgba(14,165,233,.08); }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            background: linear-gradient(145deg, #e0f2fe 0%, #bae6fd 100%);
+            color: #0369a1;
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            transition: all .25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 50px;
+            box-shadow: 8px 8px 20px rgba(148,163,184,0.3), -8px -8px 20px rgba(255,255,255,0.95), inset 2px 2px 4px rgba(255,255,255,0.6);
+            border: 1px solid rgba(186,230,253,0.4);
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { box-shadow: 12px 12px 30px rgba(148,163,184,0.22), -12px -12px 30px rgba(255,255,255,1), 0 0 30px rgba(56,189,248,.4); transform: translateY(-3px) scale(1.02); }
+        .btn-primary:active { transform: translateY(1px) scale(0.98); }
+        .btn-ghost {
+            background: linear-gradient(145deg, #ffffff, #f1f5f9);
+            color: #475569; font-family: 'DM Sans', sans-serif; font-weight: 500;
+            border: 1px solid #e2e8f0; border-radius: 50px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 4px 4px 10px rgba(148,163,184,0.15), -4px -4px 10px rgba(255,255,255,0.9);
+            transition: all .2s; text-decoration: none;
+        }
+        .btn-ghost:hover { color: #0284c7; border-color: #bae6fd; box-shadow: 8px 8px 20px rgba(56,189,248,.1), -8px -8px 20px rgba(255,255,255,1); }
+
+        /* ── Glass card ── */
+        .glass-card {
+            background: rgba(255,255,255,.65);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(204,228,255,.5);
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
+            border-radius: 20px;
+            transition: all .3s ease;
+        }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(14,165,233,0.14), inset 0 1px 0 rgba(255,255,255,0.7); }
+
+        /* ── Track card ── */
+        .track-card {
+            background: rgba(255,255,255,.72);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(204,228,255,.45);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all .3s ease;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        .track-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(14,165,233,0.14); }
+        .track-card.playing { border-color: rgba(14,165,233,.5); box-shadow: 0 0 0 2px rgba(14,165,233,.15), 0 12px 40px rgba(14,165,233,0.18); }
+
+        /* Cover art */
+        .cover-art {
+            width: 100%; aspect-ratio: 1/1;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd, #c7d2fe);
+        }
+        .cover-art-placeholder {
+            width: 100%; aspect-ratio: 1/1;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #e0f2fe 0%, #c7d2fe 50%, #bae6fd 100%);
+            font-size: 64px;
+            position: relative; overflow: hidden;
+        }
+        .cover-art-placeholder::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 60%, rgba(14,165,233,.15) 100%);
+        }
+
+        /* Audio player */
+        .player-bar {
+            height: 4px; border-radius: 2px;
+            background: #e2e8f0; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .player-progress {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #38bdf8, #6366f1);
+            width: 0%; transition: width .1s linear;
+            pointer-events: none;
+        }
+        .play-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(145deg, #e0f2fe, #bae6fd);
+            border: 1px solid rgba(56,189,248,.3);
+            box-shadow: 4px 4px 12px rgba(148,163,184,0.2), -4px -4px 12px rgba(255,255,255,0.9), 0 0 16px rgba(56,189,248,.15);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all .2s; font-size: 16px;
+            flex-shrink: 0;
+        }
+        .play-btn:hover { transform: scale(1.1); box-shadow: 6px 6px 16px rgba(148,163,184,0.15), -6px -6px 16px rgba(255,255,255,1), 0 0 24px rgba(56,189,248,.25); }
+        .play-btn.active { background: linear-gradient(145deg, #0ea5e9, #38bdf8); color: white; box-shadow: 0 0 20px rgba(14,165,233,.4); }
+
+        /* EQ animation for playing track */
+        .eq-anim { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+        .eq-anim span {
+            width: 3px; background: linear-gradient(to top, #38bdf8, #6366f1);
+            border-radius: 2px; animation: eqBounce .8s ease-in-out infinite;
+        }
+        .eq-anim span:nth-child(2) { animation-delay: .15s; }
+        .eq-anim span:nth-child(3) { animation-delay: .3s; }
+        .eq-anim span:nth-child(4) { animation-delay: .1s; }
+        @keyframes eqBounce {
+            0%, 100% { height: 4px; } 50% { height: 14px; }
+        }
+
+        /* Genre / AI tool tags */
+        .tag-genre {
+            background: linear-gradient(145deg, #e0f2fe, #f0f9ff);
+            border: 1px solid rgba(56,189,248,.25);
+            color: #0284c7; font-size: 10px; font-weight: 600;
+            padding: 2px 8px; border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .04em;
+        }
+        .tag-ai {
+            background: linear-gradient(145deg, #ede9fe, #e0e7ff);
+            border: 1px solid rgba(99,102,241,.25);
+            color: #4f46e5; font-size: 10px; font-weight: 600;
+            padding: 2px 8px; border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .04em;
+        }
+
+        /* Shimmer text */
+        .shimmer-text {
+            background: linear-gradient(90deg, #0f172a 0%, #0f172a 40%, #38bdf8 45%, #6366f1 50%, #38bdf8 55%, #0f172a 60%, #0f172a 100%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        /* Upload modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 60;
+            background: rgba(15,23,42,.55);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .modal-box {
+            background: rgba(255,255,255,.95);
+            backdrop-filter: blur(32px);
+            border: 1px solid rgba(204,228,255,.6);
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(14,165,233,0.18), inset 0 1px 0 rgba(255,255,255,1);
+            width: 100%; max-width: 540px;
+            max-height: 90vh; overflow-y: auto;
+            padding: 28px;
+        }
+        .input-field {
+            width: 100%;
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: 'DM Sans', sans-serif; font-size: 14px; color: #334155;
+            outline: none; transition: all .2s;
+            box-shadow: inset 2px 2px 6px rgba(148,163,184,0.1), inset -2px -2px 6px rgba(255,255,255,0.8);
+        }
+        .input-field:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,.12), inset 2px 2px 6px rgba(148,163,184,0.1); }
+        .input-field::placeholder { color: #94a3b8; }
+        .drop-zone-upload {
+            border: 2px dashed #bae6fd; border-radius: 14px;
+            padding: 24px; text-align: center; cursor: pointer;
+            transition: all .2s; background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+        }
+        .drop-zone-upload:hover, .drop-zone-upload.dragover { border-color: #38bdf8; background: rgba(56,189,248,.06); }
+        .drop-zone-upload input[type="file"] { display: none; }
+
+        /* Cover art preview in modal */
+        #coverPreviewWrap { display: none; }
+        #coverPreviewWrap.visible { display: block; }
+
+        /* Notification */
+        .notif {
+            position: fixed; bottom: 24px; right: 24px; z-index: 999;
+            background: rgba(255,255,255,.92); backdrop-filter: blur(12px);
+            border: 1px solid rgba(56,189,248,.3); border-radius: 14px;
+            padding: 12px 20px; font-size: 14px; font-weight: 500; color: #0f172a;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.15);
+            transform: translateY(80px); opacity: 0; transition: all .3s ease;
+        }
+        .notif.show { transform: translateY(0); opacity: 1; }
+        .notif.error { border-color: rgba(239,68,68,.3); color: #991b1b; }
+
+        /* Reveal */
+        .reveal { opacity: 0; transform: translateY(20px); transition: all .5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Empty state */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 32px; }
+
+        /* Video badge */
+        .badge-video {
+            background: linear-gradient(145deg, #fef3c7, #fde68a);
+            border: 1px solid rgba(245,158,11,.25);
+            color: #b45309; font-size: 10px; font-weight: 600;
+            padding: 2px 8px; border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .04em;
+        }
+
+        /* Footer */
+        .site-footer {
+            border-top: 1px solid rgba(204,228,255,.5);
+            background: rgba(255,255,255,.65);
+            backdrop-filter: blur(16px);
+        }
+
+        /* Gothic toggle button */
+        .gothic-btn {
+            background: transparent;
+            border: 1px solid rgba(148,163,184,.35);
+            border-radius: 10px;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1rem;
+            transition: all .2s;
+        }
+        .gothic-btn:hover { border-color: #94a3b8; background: rgba(148,163,184,.08); }
+        .gothic-btn.gothic-active {
+            box-shadow: 0 0 14px rgba(255,255,255,.35), 0 0 30px rgba(255,255,255,.12);
+            border-color: rgba(255,255,255,.5) !important;
+            background: rgba(255,255,255,.08) !important;
+        }
+
+        /* ══════════════════════════════════════════════
+           GOTHIC THEME  —  Optional B&W overlay
+           ══════════════════════════════════════════════ */
+        @keyframes gothicScan {
+            0%   { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+        @keyframes gothicPulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,.12), 0 0 20px rgba(255,255,255,.05); }
+            50%       { box-shadow: 0 0 18px rgba(255,255,255,.28), 0 0 40px rgba(255,255,255,.12); }
+        }
+        @keyframes gothicTextPulse {
+            0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,.3); }
+            50%       { text-shadow: 0 0 14px rgba(255,255,255,.7), 0 0 28px rgba(255,255,255,.3); }
+        }
+
+        html.gothic body { background: #000 !important; color: #e8e8e8 !important; }
+        html.gothic body::before { background: none !important; }
+        html.gothic body::after {
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.18) 3px, rgba(0,0,0,.18) 4px),
+                linear-gradient(180deg, rgba(255,255,255,.015) 0%, rgba(0,0,0,0) 50%, rgba(255,255,255,.015) 100%) !important;
+            animation: gothicScan 8s linear infinite !important;
+            pointer-events: none;
+            z-index: 9998 !important;
+        }
+
+        /* Nav */
+        html.gothic .landing-nav {
+            background: rgba(0,0,0,.95) !important;
+            border-bottom-color: rgba(255,255,255,.1) !important;
+            box-shadow: 0 2px 40px rgba(255,255,255,.04) !important;
+        }
+        html.gothic .nav-link { color: rgba(255,255,255,.45) !important; }
+        html.gothic .nav-link:hover { color: #fff !important; background: rgba(255,255,255,.06) !important; text-shadow: 0 0 10px rgba(255,255,255,.5); }
+        html.gothic .nav-link.active { color: #fff !important; background: rgba(255,255,255,.07) !important; text-shadow: 0 0 12px rgba(255,255,255,.7); }
+        html.gothic .gothic-btn { border-color: rgba(255,255,255,.2) !important; color: rgba(255,255,255,.7) !important; }
+        html.gothic .gothic-btn:hover { background: rgba(255,255,255,.1) !important; box-shadow: 0 0 16px rgba(255,255,255,.2); color: #fff !important; }
+
+        /* Buttons */
+        html.gothic .btn-primary {
+            background: rgba(255,255,255,.06) !important;
+            color: #fff !important;
+            border-color: rgba(255,255,255,.2) !important;
+            box-shadow: none !important;
+            animation: gothicPulse 3s ease-in-out infinite;
+        }
+        html.gothic .btn-primary:hover { background: rgba(255,255,255,.1) !important; box-shadow: 0 0 30px rgba(255,255,255,.2) !important; }
+        html.gothic .btn-ghost { background: rgba(255,255,255,.04) !important; color: rgba(255,255,255,.65) !important; border-color: rgba(255,255,255,.14) !important; box-shadow: none !important; }
+        html.gothic .btn-ghost:hover { color: #fff !important; border-color: rgba(255,255,255,.4) !important; background: rgba(255,255,255,.08) !important; }
+
+        /* Cards */
+        html.gothic .glass-card {
+            background: rgba(255,255,255,.03) !important;
+            border-color: rgba(255,255,255,.1) !important;
+            box-shadow: 0 0 20px rgba(255,255,255,.04) !important;
+        }
+        html.gothic .glass-card:hover { box-shadow: 0 0 30px rgba(255,255,255,.08) !important; }
+        html.gothic .track-card {
+            background: rgba(255,255,255,.03) !important;
+            border-color: rgba(255,255,255,.1) !important;
+            box-shadow: none !important;
+        }
+        html.gothic .track-card:hover { box-shadow: 0 0 24px rgba(255,255,255,.08) !important; transform: translateY(-4px); }
+        html.gothic .track-card.playing { border-color: rgba(255,255,255,.5) !important; box-shadow: 0 0 0 2px rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.1) !important; }
+
+        /* Cover art */
+        html.gothic .cover-art-placeholder {
+            background: linear-gradient(135deg, #111 0%, #222 50%, #111 100%) !important;
+            filter: grayscale(1);
+        }
+
+        /* Player */
+        html.gothic .player-bar { background: rgba(255,255,255,.12) !important; }
+        html.gothic .player-progress { background: linear-gradient(90deg, #fff, rgba(255,255,255,.6)) !important; }
+        html.gothic .play-btn {
+            background: rgba(255,255,255,.06) !important;
+            border-color: rgba(255,255,255,.15) !important;
+            box-shadow: 0 0 12px rgba(255,255,255,.1) !important;
+        }
+        html.gothic .play-btn:hover { box-shadow: 0 0 20px rgba(255,255,255,.25) !important; }
+        html.gothic .play-btn.active { background: rgba(255,255,255,.15) !important; box-shadow: 0 0 24px rgba(255,255,255,.35) !important; color: #fff !important; }
+
+        /* EQ bars */
+        html.gothic .eq-anim span { background: linear-gradient(to top, #fff, rgba(255,255,255,.6)) !important; }
+
+        /* Tags */
+        html.gothic .tag-genre {
+            background: rgba(255,255,255,.05) !important;
+            border-color: rgba(255,255,255,.15) !important;
+            color: rgba(255,255,255,.7) !important;
+        }
+        html.gothic .tag-ai {
+            background: rgba(255,255,255,.05) !important;
+            border-color: rgba(255,255,255,.15) !important;
+            color: rgba(255,255,255,.7) !important;
+        }
+        html.gothic .badge-video {
+            background: rgba(255,255,255,.05) !important;
+            border-color: rgba(255,255,255,.1) !important;
+            color: rgba(255,255,255,.6) !important;
+        }
+
+        /* Filter buttons */
+        html.gothic .filter-btn {
+            background: rgba(255,255,255,.04) !important;
+            border-color: rgba(255,255,255,.1) !important;
+            color: rgba(255,255,255,.5) !important;
+        }
+        html.gothic .filter-btn:hover { border-color: rgba(255,255,255,.35) !important; color: #fff !important; background: rgba(255,255,255,.07) !important; }
+        html.gothic .filter-btn.active { background: rgba(255,255,255,.1) !important; border-color: rgba(255,255,255,.5) !important; color: #fff !important; box-shadow: 0 0 12px rgba(255,255,255,.15) !important; }
+
+        /* Shimmer text gothic */
+        html.gothic .shimmer-text {
+            background: linear-gradient(90deg, #fff 0%, #fff 40%, rgba(255,255,255,.5) 45%, rgba(255,255,255,.8) 50%, rgba(255,255,255,.5) 55%, #fff 60%, #fff 100%) !important;
+            background-size: 300% 100% !important;
+        }
+
+        /* Modal */
+        html.gothic .modal-overlay { background: rgba(0,0,0,.8) !important; }
+        html.gothic .modal-box {
+            background: rgba(10,10,10,.96) !important;
+            border-color: rgba(255,255,255,.12) !important;
+            box-shadow: 0 0 60px rgba(255,255,255,.08) !important;
+        }
+        html.gothic .modal-box * { color: #e8e8e8; }
+        html.gothic .input-field {
+            background: rgba(255,255,255,.04) !important;
+            border-color: rgba(255,255,255,.14) !important;
+            color: #e8e8e8 !important;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,.6) !important;
+        }
+        html.gothic .input-field::placeholder { color: rgba(255,255,255,.25) !important; }
+        html.gothic .input-field:focus { border-color: rgba(255,255,255,.5) !important; box-shadow: 0 0 0 3px rgba(255,255,255,.08) !important; }
+        html.gothic select.input-field option { background: #111; color: #e8e8e8; }
+        html.gothic .drop-zone-upload {
+            border-color: rgba(255,255,255,.15) !important;
+            background: rgba(255,255,255,.02) !important;
+        }
+        html.gothic .drop-zone-upload:hover, html.gothic .drop-zone-upload.dragover { border-color: rgba(255,255,255,.4) !important; background: rgba(255,255,255,.05) !important; }
+
+        /* Notification */
+        html.gothic .notif {
+            background: rgba(10,10,10,.95) !important;
+            border-color: rgba(255,255,255,.2) !important;
+            color: #e8e8e8 !important;
+            box-shadow: 0 0 24px rgba(255,255,255,.1) !important;
+        }
+
+        /* Footer */
+        html.gothic .site-footer {
+            border-top-color: rgba(255,255,255,.08) !important;
+            background: rgba(0,0,0,.9) !important;
+        }
+        html.gothic .site-footer * { color: rgba(255,255,255,.45) !important; }
+
+        /* Scrollbar */
+        html.gothic ::-webkit-scrollbar-track { background: #111 !important; }
+        html.gothic ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2) !important; }
+
+        /* Tailwind token overrides */
+        html.gothic .text-kx-white  { color: #e8e8e8 !important; }
+        html.gothic .text-kx-pink   { color: rgba(255,255,255,.8) !important; }
+        html.gothic .text-kx-cyan   { color: rgba(255,255,255,.7) !important; }
+        html.gothic .text-kx-muted  { color: rgba(255,255,255,.4) !important; }
+        html.gothic .text-kx-text   { color: rgba(255,255,255,.6) !important; }
+        html.gothic .text-sky-600, html.gothic .text-sky-700, html.gothic .text-sky-800 { color: rgba(255,255,255,.7) !important; }
+        html.gothic .text-slate-500, html.gothic .text-slate-600, html.gothic .text-slate-700 { color: rgba(255,255,255,.45) !important; }
+        html.gothic .bg-sky-50, html.gothic .bg-sky-100 { background: rgba(255,255,255,.05) !important; }
+        html.gothic .border-sky-200 { border-color: rgba(255,255,255,.1) !important; }
+        html.gothic .text-indigo-500, html.gothic .text-indigo-600 { color: rgba(255,255,255,.6) !important; }
+
+        /* Accessibility: visible focus rings for keyboard users */
+        *:focus-visible {
+            outline: 2px solid #38bdf8;
+            outline-offset: 2px;
+        }
+
+        /* ─── Dark Theme ─── */
+        html.dark body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        html.dark body::before {
+            opacity: 0.08;
+            filter: brightness(0.3) contrast(1.2);
+        }
+        html.dark body::after {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.90) 50%, rgba(15,23,42,0.95) 100%);
+        }
+        html.dark .landing-nav {
+            background: rgba(15,23,42,0.85);
+            border-bottom-color: rgba(56,189,248,0.15);
+        }
+        html.dark .nav-link { color: #94a3b8; }
+        html.dark .nav-link:hover { color: #38bdf8; background: rgba(56,189,248,0.1); }
+        html.dark .nav-link.active { color: #38bdf8; background: rgba(56,189,248,0.12); }
+        html.dark .glass-card {
+            background: rgba(30,41,59,0.7);
+            border-color: rgba(56,189,248,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        html.dark .glass-card:hover {
+            box-shadow: 0 16px 48px rgba(14,165,233,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        html.dark .track-card {
+            background: rgba(30,41,59,0.7);
+            border-color: rgba(56,189,248,0.15);
+        }
+        html.dark .track-card:hover { box-shadow: 0 16px 48px rgba(14,165,233,0.15); }
+        html.dark .track-card.playing { border-color: rgba(14,165,233,0.5); }
+        html.dark .cover-art-placeholder {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+        }
+        html.dark .player-bar { background: rgba(255,255,255,0.1); }
+        html.dark .play-btn {
+            background: linear-gradient(145deg, #1e293b, #334155);
+            border-color: rgba(56,189,248,0.3);
+        }
+        html.dark .play-btn.active { background: linear-gradient(145deg, #0ea5e9, #38bdf8); }
+        html.dark .tag-genre {
+            background: rgba(14,165,233,0.15);
+            border-color: rgba(56,189,248,0.2);
+            color: #38bdf8;
+        }
+        html.dark .tag-ai {
+            background: rgba(99,102,241,0.15);
+            border-color: rgba(99,102,241,0.2);
+            color: #818cf8;
+        }
+        html.dark .badge-video {
+            background: rgba(245,158,11,0.15);
+            border-color: rgba(245,158,11,0.2);
+            color: #fbbf24;
+        }
+        html.dark .filter-btn {
+            background: rgba(30,41,59,0.7);
+            border-color: #334155;
+            color: #94a3b8;
+        }
+        html.dark .filter-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+        html.dark .filter-btn.active {
+            background: linear-gradient(145deg, #0ea5e9, #0284c7);
+            border-color: #38bdf8;
+            color: #fff;
+        }
+        html.dark .shimmer-text {
+            background: linear-gradient(90deg, #fff 0%, #fff 40%, #38bdf8 45%, #6366f1 50%, #38bdf8 55%, #fff 60%, #fff 100%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        html.dark .modal-overlay { background: rgba(0,0,0,0.8); }
+        html.dark .modal-box {
+            background: rgba(15,23,42,0.96);
+            border-color: rgba(56,189,248,0.15);
+        }
+        html.dark .input-field {
+            background: rgba(30,41,59,0.8);
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        html.dark .input-field::placeholder { color: #64748b; }
+        html.dark .input-field:focus { border-color: #38bdf8; }
+        html.dark select.input-field option { background: #1e293b; color: #e2e8f0; }
+        html.dark .drop-zone-upload {
+            border-color: rgba(56,189,248,0.2);
+            background: rgba(30,41,59,0.5);
+        }
+        html.dark .drop-zone-upload:hover, html.dark .drop-zone-upload.dragover {
+            border-color: #38bdf8;
+            background: rgba(56,189,248,0.1);
+        }
+        html.dark .notif {
+            background: rgba(15,23,42,0.95);
+            border-color: rgba(56,189,248,0.2);
+            color: #e2e8f0;
+        }
+        html.dark .notif.error { border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+        html.dark .site-footer {
+            border-top-color: rgba(56,189,248,0.1);
+            background: rgba(15,23,42,0.7);
+        }
+        html.dark ::-webkit-scrollbar-track { background: #0f172a; }
+        html.dark ::-webkit-scrollbar-thumb { background: #334155; }
+        html.dark .text-kx-white { color: #f1f5f9 !important; }
+        html.dark .text-kx-text { color: #94a3b8 !important; }
+        html.dark .text-kx-muted { color: #64748b !important; }
+        html.dark .text-sky-600, html.dark .text-sky-700 { color: #38bdf8 !important; }
+        html.dark .bg-sky-50 { background: rgba(14,165,233,0.1) !important; }
+        html.dark .border-sky-200 { border-color: rgba(56,189,248,0.2) !important; }
+
+        /* Respect user motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            body::before, body::after { display: none; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- ══ NAV ══════════════════════════════════════════ -->
+<nav class="landing-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-white font-black font-display text-sm shadow-lg">K</div>
+                <span class="font-display font-bold text-base text-kx-white tracking-tight">KHMERIX<span class="text-kx-pink ml-1">Studio</span></span>
+            </a>
+            <div class="hidden md:flex items-center gap-1">
+                <a href="index.html" class="nav-link">🏠 Home</a>
+                <a href="studio.html" class="nav-link">🎛️ Studio</a>
+                <a href="highlights.html" class="nav-link active">🎵 AI Highlights</a>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="gothic-btn" id="themeToggle" title="Toggle Theme">🌙</button>
+                <button onclick="toggleGothic()" class="gothic-btn" id="gothicToggle" title="Enable Gothic Theme">💀</button>
+                <button onclick="openSubmitModal()" class="btn-primary px-5 py-2 text-sm">
+                    ＋ Submit Track
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════ -->
+<section class="pt-28 pb-14 px-4 max-w-7xl mx-auto relative z-10">
+    <div class="text-center reveal" id="hero-reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-mono font-semibold mb-6 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+            COMMUNITY SHOWCASE
+        </div>
+        <h1 class="font-display font-extrabold text-4xl md:text-6xl leading-tight tracking-tight text-kx-white mb-4">
+            AI Music <span class="shimmer-text">Highlights</span>
+        </h1>
+        <p class="text-kx-text text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
+            Discover the best AI-generated tracks from the KHMERIX community.<br class="hidden md:block">
+            Created with tools like Suno, Udio, MusicGen, and more.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+            <button onclick="openSubmitModal()" class="btn-primary px-7 py-3.5 text-base">
+                🎵 Submit Your Track
+            </button>
+            <a href="studio.html" class="btn-ghost px-7 py-3.5 text-base">
+                🎛️ Open Studio
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="grid grid-cols-3 gap-4 mt-12 max-w-lg mx-auto reveal" id="stats-reveal">
+        <div class="glass-card p-4 text-center">
+            <div class="font-display font-bold text-2xl text-kx-cyan" id="stat-tracks">0</div>
+            <div class="text-xs text-kx-muted font-mono mt-1">TRACKS</div>
+        </div>
+        <div class="glass-card p-4 text-center">
+            <div class="font-display font-bold text-2xl text-kx-violet" id="stat-genres">0</div>
+            <div class="text-xs text-kx-muted font-mono mt-1">GENRES</div>
+        </div>
+        <div class="glass-card p-4 text-center">
+            <div class="font-display font-bold text-2xl text-kx-gold" id="stat-plays">0</div>
+            <div class="text-xs text-kx-muted font-mono mt-1">PLAYS</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ FILTER BAR ════════════════════════════════ -->
+<section class="px-4 max-w-7xl mx-auto mb-8 relative z-10">
+    <div class="flex flex-wrap gap-2 items-center">
+        <span class="text-xs font-mono text-kx-muted uppercase tracking-wider mr-2">Filter:</span>
+        <button class="filter-btn active" data-filter="all" onclick="filterTracks('all', this)">All</button>
+        <button class="filter-btn" data-filter="hip-hop" onclick="filterTracks('hip-hop', this)">Hip-Hop</button>
+        <button class="filter-btn" data-filter="electronic" onclick="filterTracks('electronic', this)">Electronic</button>
+        <button class="filter-btn" data-filter="ambient" onclick="filterTracks('ambient', this)">Ambient</button>
+        <button class="filter-btn" data-filter="trap" onclick="filterTracks('trap', this)">Trap</button>
+        <button class="filter-btn" data-filter="lofi" onclick="filterTracks('lofi', this)">Lo-Fi</button>
+        <button class="filter-btn" data-filter="rnb" onclick="filterTracks('rnb', this)">R&amp;B</button>
+        <button class="filter-btn" data-filter="other" onclick="filterTracks('other', this)">Other</button>
+        <span class="ml-auto text-xs text-kx-muted font-mono" id="track-count-label"></span>
+    </div>
+</section>
+<style>
+.filter-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    padding: 6px 16px; border-radius: 50px; border: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.7); color: #475569; cursor: pointer; transition: all .2s;
+}
+.filter-btn:hover { border-color: #bae6fd; color: #0284c7; }
+.filter-btn.active { background: linear-gradient(145deg, #e0f2fe, #bae6fd); border-color: #38bdf8; color: #0284c7; font-weight: 600; box-shadow: 0 0 12px rgba(56,189,248,.15); }
+</style>
+
+<!-- ══ TRACK GRID ════════════════════════════════ -->
+<main class="px-4 max-w-7xl mx-auto pb-24 relative z-10" id="trackGrid">
+    <!-- Empty state shown when no tracks -->
+    <div id="emptyState" class="empty-state reveal">
+        <div class="text-6xl mb-4">🎵</div>
+        <h3 class="font-display font-bold text-xl text-kx-white mb-2">No tracks yet</h3>
+        <p class="text-kx-muted text-sm text-center mb-6 max-w-xs">Be the first to share your AI-generated music with the KHMERIX community.</p>
+        <button onclick="openSubmitModal()" class="btn-primary px-6 py-3">Submit the first track</button>
+    </div>
+    <div id="tracksContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+</main>
+
+<!-- ══ SUBMIT MODAL ══════════════════════════════ -->
+<div id="submitModal" class="modal-overlay hidden" onclick="closeSubmitModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-display font-bold text-xl text-kx-white">Submit Your AI Track</h2>
+            <button onclick="closeSubmitModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 text-sm transition">✕</button>
+        </div>
+
+        <!-- Cover Art Upload -->
+        <div class="mb-5">
+            <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-2">Cover Art <span class="text-kx-muted normal-case font-normal font-body">(optional — JPG, PNG, WebP)</span></label>
+            <div class="drop-zone-upload" id="coverDropZone" onclick="document.getElementById('coverInput').click()" ondragover="dzDragOver(event,this)" ondragleave="dzDragLeave(this)" ondrop="dzDrop(event,'cover')">
+                <input type="file" id="coverInput" accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleCoverSelect(this)">
+                <div id="coverDropContent" style="pointer-events:none">
+                    <div class="text-3xl mb-2">🖼️</div>
+                    <p class="text-kx-text text-sm font-medium">Drop image here or click to browse</p>
+                    <p class="text-kx-muted text-xs mt-1">JPG, PNG, WebP up to 5MB</p>
+                </div>
+            </div>
+            <div id="coverPreviewWrap" class="mt-3">
+                <div class="relative inline-block">
+                    <img id="coverPreviewImg" src="" alt="cover" class="w-24 h-24 rounded-xl object-cover border border-kx-border shadow">
+                    <button onclick="clearCover()" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-white text-xs flex items-center justify-center shadow">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio / Video Upload -->
+        <div class="mb-5">
+            <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-2">Audio or Video File <span class="text-red-400">*</span></label>
+            <div class="drop-zone-upload" id="audioDropZone" onclick="document.getElementById('audioInput').click()" ondragover="dzDragOver(event,this)" ondragleave="dzDragLeave(this)" ondrop="dzDrop(event,'audio')">
+                <input type="file" id="audioInput" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/flac,video/mp4,video/webm,audio/*,video/*" onchange="handleAudioSelect(this)">
+                <div id="audioDropContent" style="pointer-events:none">
+                    <div class="text-3xl mb-2">🎵</div>
+                    <p class="text-kx-text text-sm font-medium">Drop MP3 / MP4 here or click to browse</p>
+                    <p class="text-kx-muted text-xs mt-1">MP3, WAV, OGG, FLAC, MP4, WebM up to 50MB</p>
+                </div>
+            </div>
+            <div id="audioPreviewWrap" class="hidden mt-3">
+                <div class="flex items-center gap-3 p-3 bg-sky-50 rounded-xl border border-sky-200">
+                    <span class="text-2xl" id="audioFileIcon">🎵</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-kx-white truncate" id="audioFileName">—</p>
+                        <p class="text-xs text-kx-muted" id="audioFileSize">—</p>
+                    </div>
+                    <button onclick="clearAudio()" class="text-red-400 hover:text-red-600 text-lg transition">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Track Details -->
+        <div class="space-y-4 mb-6">
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-1.5">Track Title <span class="text-red-400">*</span></label>
+                <input id="trackTitle" type="text" placeholder="e.g. Midnight Frequency" class="input-field" maxlength="80">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-1.5">Genre</label>
+                    <select id="trackGenre" class="input-field">
+                        <option value="hip-hop">Hip-Hop</option>
+                        <option value="trap">Trap</option>
+                        <option value="electronic">Electronic</option>
+                        <option value="ambient">Ambient</option>
+                        <option value="lofi">Lo-Fi</option>
+                        <option value="rnb">R&amp;B</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-1.5">AI Tool Used</label>
+                    <select id="trackAiTool" class="input-field">
+                        <option value="Suno">Suno</option>
+                        <option value="Udio">Udio</option>
+                        <option value="MusicGen">MusicGen</option>
+                        <option value="Stable Audio">Stable Audio</option>
+                        <option value="AudioCraft">AudioCraft</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-1.5">Description <span class="text-kx-muted font-body font-normal normal-case">(optional)</span></label>
+                <textarea id="trackDesc" rows="3" placeholder="What was the prompt or inspiration?" class="input-field resize-none" maxlength="280"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-kx-muted mb-1.5">Artist / Creator Name</label>
+                <input id="trackArtist" type="text" placeholder="Anonymous" class="input-field" maxlength="50">
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="submitTrack()" class="flex-1 btn-primary py-3 text-sm justify-center">🎵 Publish Track</button>
+            <button onclick="closeSubmitModal()" class="btn-ghost px-5 py-3 text-sm">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════ -->
+<footer class="site-footer px-4 py-10">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-md bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-white font-black font-display text-xs">K</div>
+            <span class="font-display font-bold text-sm text-kx-white">KHMERIX Studio</span>
+        </div>
+        <div class="flex gap-6 text-sm text-kx-muted">
+            <a href="index.html" class="hover:text-kx-cyan transition">Home</a>
+            <a href="studio.html" class="hover:text-kx-cyan transition">Studio</a>
+            <a href="highlights.html" class="hover:text-kx-cyan transition">AI Highlights</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="https://www.youtube.com/@creativemindscambodia" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-kx-surface border border-kx-border flex items-center justify-center hover:border-kx-pink transition-colors" title="YouTube">
+                <svg class="w-4 h-4 text-kx-muted hover:text-kx-pink" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/khmerix/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-kx-surface border border-kx-border flex items-center justify-center hover:border-kx-violet transition-colors" title="Instagram">
+                <svg class="w-4 h-4 text-kx-muted hover:text-kx-violet" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </a>
+            <a href="https://www.tiktok.com/@creativemindscambodia1" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-kx-surface border border-kx-border flex items-center justify-center hover:border-kx-cyan transition-colors" title="TikTok">
+                <svg class="w-4 h-4 text-kx-muted hover:text-kx-cyan" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.16 15a6.34 6.34 0 0 0 10.86 4.46V12.8A8.28 8.28 0 0 0 19.59 15V11.5a4.83 4.83 0 0 1-3.77-1.21V6.69h3.77z"/></svg>
+            </a>
+            <a href="https://github.com/Khmerix/Khmerixstudio" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-kx-surface border border-kx-border flex items-center justify-center hover:border-kx-acid transition-colors" title="GitHub">
+                <svg class="w-4 h-4 text-kx-muted hover:text-kx-acid" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+        </div>
+        <p class="text-xs text-kx-muted font-mono">© 2026 KHMERIX Studio</p>
+    </div>
+</footer>
+
+<!-- ══ JAVASCRIPT ════════════════════════════════ -->
+<script>
+// ── State ─────────────────────────────────────────
+let tracks = [];          // metadata only (no blobs)
+let blobUrls = {};        // id → objectURL, created on first play
+let totalPlays = 0;
+let currentAudio = null;
+let currentTrackId = null;
+let selectedAudioFile = null;
+let selectedCoverFile = null;
+let activeFilter = 'all';
+
+// ── IndexedDB (handles large files — no localStorage size limit) ──────
+const DB_NAME = 'kx_highlights_v1';
+let db = null;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        if (db) { resolve(db); return; }
+        const req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = e => {
+            const d = e.target.result;
+            if (!d.objectStoreNames.contains('tracks'))
+                d.createObjectStore('tracks', { keyPath: 'id' });
+        };
+        req.onsuccess  = e => { db = e.target.result; resolve(db); };
+        req.onerror    = e => reject(e.target.error);
+    });
+}
+
+function dbPut(track) {
+    return openDB().then(d => new Promise((resolve, reject) => {
+        const tx = d.transaction('tracks', 'readwrite');
+        tx.objectStore('tracks').put(track);
+        tx.oncomplete = resolve;
+        tx.onerror    = e => reject(e.target.error);
+    }));
+}
+
+function dbGetAll() {
+    return openDB().then(d => new Promise((resolve, reject) => {
+        const tx  = d.transaction('tracks', 'readonly');
+        const req = tx.objectStore('tracks').getAll();
+        req.onsuccess = e => resolve(e.target.result || []);
+        req.onerror   = e => reject(e.target.error);
+    }));
+}
+
+function dbDelete(id) {
+    return openDB().then(d => new Promise((resolve, reject) => {
+        const tx = d.transaction('tracks', 'readwrite');
+        tx.objectStore('tracks').delete(id);
+        tx.oncomplete = resolve;
+        tx.onerror    = e => reject(e.target.error);
+    }));
+}
+
+// ── Load ──────────────────────────────────────────
+function loadTracks() {
+    dbGetAll().then(rows => {
+        // Sort newest first, separate metadata from audio blob
+        tracks = rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+        totalPlays = tracks.reduce((s, t) => s + (t.plays || 0), 0);
+        renderAll();
+    }).catch(() => { tracks = []; renderAll(); });
+}
+
+function saveMeta(track) {
+    // Store track including its audioBlob (IndexedDB stores Blobs natively)
+    return dbPut(track);
+}
+
+// ── Render ────────────────────────────────────────
+function renderAll() {
+    updateStats();
+    renderTracks(activeFilter);
+}
+
+function updateStats() {
+    const genres = new Set(tracks.map(t => t.genre));
+    document.getElementById('stat-tracks').textContent = tracks.length;
+    document.getElementById('stat-genres').textContent = genres.size;
+    document.getElementById('stat-plays').textContent = totalPlays;
+}
+
+function renderTracks(filter) {
+    const container = document.getElementById('tracksContainer');
+    const empty     = document.getElementById('emptyState');
+    const label     = document.getElementById('track-count-label');
+
+    const filtered = filter === 'all' ? tracks : tracks.filter(t => t.genre === filter);
+    label.textContent = `${filtered.length} track${filtered.length !== 1 ? 's' : ''}`;
+
+    if (filtered.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
+    container.innerHTML = filtered.map(t => buildTrackCard(t)).join('');
+
+    // Observe for reveal animation
+    container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function buildTrackCard(track) {
+    const isVideo = track.fileType && track.fileType.startsWith('video/');
+    const cover = track.coverDataUrl
+        ? `<img src="${track.coverDataUrl}" alt="${escHtml(track.title)}" class="cover-art">`
+        : `<div class="cover-art-placeholder"><span>${track.emoji || '🎵'}</span></div>`;
+
+    const videoIcon = isVideo ? `<span class="badge-video">VIDEO</span>` : '';
+    const eqAnim = `<div class="eq-anim hidden" id="eq-${track.id}"><span></span><span></span><span></span><span></span></div>`;
+
+    return `
+    <div class="track-card reveal" id="card-${track.id}" data-genre="${track.genre}">
+        <div class="relative overflow-hidden" style="border-radius:20px 20px 0 0">
+            ${cover}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
+                <span class="tag-genre">${track.genre}</span>
+                <span class="tag-ai">${track.aiTool}</span>
+                ${videoIcon}
+            </div>
+            <div class="absolute bottom-2.5 right-2.5 text-white text-xs font-mono bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full" id="dur-${track.id}">—:——</div>
+        </div>
+        <div class="p-4">
+            <div class="flex items-start justify-between gap-2 mb-1">
+                <div class="min-w-0">
+                    <h3 class="font-display font-bold text-sm text-kx-white truncate">${escHtml(track.title)}</h3>
+                    <p class="text-xs text-kx-muted font-body">${escHtml(track.artist || 'Anonymous')}</p>
+                </div>
+                ${eqAnim}
+            </div>
+            ${track.description ? `<p class="text-xs text-kx-text leading-relaxed mb-3 line-clamp-2">${escHtml(track.description)}</p>` : '<div class="mb-3"></div>'}
+            <!-- Player -->
+            <div class="flex items-center gap-3 mb-2">
+                <button class="play-btn" id="play-${track.id}" onclick="toggleTrack('${track.id}')" title="Play / Pause">▶</button>
+                <div class="flex-1">
+                    <div class="player-bar" id="bar-${track.id}" onclick="seekTrack(event, '${track.id}')">
+                        <div class="player-progress" id="prog-${track.id}"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-kx-muted font-mono mt-0.5">
+                        <span id="cur-${track.id}">0:00</span>
+                        <span class="text-xs text-kx-muted" data-plays>${track.plays || 0} plays</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 pb-3 flex items-center justify-between border-t border-kx-border/40 pt-2.5">
+            <span class="text-[10px] text-kx-muted font-mono">${new Date(track.date).toLocaleDateString()}</span>
+            <button onclick="deleteTrack('${track.id}')" class="text-[10px] text-slate-400 hover:text-red-500 font-mono transition px-1">✕ remove</button>
+        </div>
+    </div>`;
+}
+
+// ── Playback ──────────────────────────────────────
+function toggleTrack(id) {
+    const track = tracks.find(t => t.id === id);
+    if (!track) return;
+
+    // Resume/pause if already loaded
+    if (currentAudio && currentTrackId === id) {
+        if (currentAudio.paused) { currentAudio.play(); setPlaying(id, true); }
+        else                     { currentAudio.pause(); setPlaying(id, false); }
+        return;
+    }
+
+    stopCurrent();
+
+    // Get or create an object URL from the stored Blob
+    if (!blobUrls[id]) {
+        if (!track.audioBlob) { showNotif('Audio not found — please re-upload', 'error'); return; }
+        blobUrls[id] = URL.createObjectURL(track.audioBlob);
+    }
+
+    currentAudio    = new Audio(blobUrls[id]);
+    currentTrackId  = id;
+
+    currentAudio.addEventListener('loadedmetadata', () => {
+        const el = document.getElementById('dur-' + id);
+        if (el) el.textContent = fmtTime(currentAudio.duration);
+    });
+
+    currentAudio.addEventListener('timeupdate', () => {
+        const prog = document.getElementById('prog-' + id);
+        const cur  = document.getElementById('cur-'  + id);
+        if (!currentAudio) return;
+        const pct = (currentAudio.currentTime / currentAudio.duration) * 100 || 0;
+        if (prog) prog.style.width   = pct + '%';
+        if (cur)  cur.textContent    = fmtTime(currentAudio.currentTime);
+    });
+
+    currentAudio.addEventListener('ended', stopCurrent);
+
+    currentAudio.play().catch(() => showNotif('Could not play audio', 'error'));
+    setPlaying(id, true);
+
+    // Persist incremented play count
+    track.plays = (track.plays || 0) + 1;
+    totalPlays++;
+    updateStats();
+    saveMeta(track);
+    const playsEl = document.querySelector(`#card-${id} [data-plays]`);
+    if (playsEl) playsEl.textContent = track.plays + ' plays';
+}
+
+function stopCurrent() {
+    if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+    if (currentTrackId) setPlaying(currentTrackId, false);
+    currentTrackId = null;
+}
+
+function setPlaying(id, on) {
+    const btn  = document.getElementById('play-' + id);
+    const card = document.getElementById('card-' + id);
+    const eq   = document.getElementById('eq-'   + id);
+    if (btn)  { btn.textContent = on ? '⏸' : '▶'; btn.classList.toggle('active', on); }
+    if (card) card.classList.toggle('playing', on);
+    if (eq)   eq.classList.toggle('hidden', !on);
+}
+
+function seekTrack(e, id) {
+    if (!currentAudio || currentTrackId !== id) return;
+    const bar  = document.getElementById('bar-' + id);
+    const rect = bar.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    currentAudio.currentTime = pct * currentAudio.duration;
+}
+
+function fmtTime(s) {
+    if (!s || isNaN(s)) return '0:00';
+    return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+}
+
+// ── Filter ────────────────────────────────────────
+function filterTracks(filter, btn) {
+    activeFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    stopCurrent();
+    renderTracks(filter);
+}
+
+// ── Submit Modal ──────────────────────────────────
+function openSubmitModal() {
+    document.getElementById('submitModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSubmitModal(e) {
+    if (e && e.target !== document.getElementById('submitModal')) return;
+    document.getElementById('submitModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// ── Cover art ────────────────────────────────────
+function handleCoverSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showNotif('Image must be under 5MB', 'error'); return; }
+    selectedCoverFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('coverPreviewImg').src = e.target.result;
+        document.getElementById('coverPreviewWrap').classList.add('visible');
+        document.getElementById('coverDropContent').innerHTML = `<p class="text-xs text-kx-cyan font-mono">✓ Image selected</p>`;
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearCover() {
+    selectedCoverFile = null;
+    document.getElementById('coverInput').value = '';
+    document.getElementById('coverPreviewWrap').classList.remove('visible');
+    document.getElementById('coverPreviewImg').src = '';
+    document.getElementById('coverDropContent').innerHTML = `
+        <div class="text-3xl mb-2">🖼️</div>
+        <p class="text-kx-text text-sm font-medium">Drop image here or click to browse</p>
+        <p class="text-kx-muted text-xs mt-1">JPG, PNG, WebP up to 5MB</p>`;
+}
+
+// ── Audio / Video file ────────────────────────────
+function handleAudioSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) { showNotif('File must be under 50MB', 'error'); return; }
+    const isVideo = file.type.startsWith('video/');
+    const isAudio = file.type.startsWith('audio/');
+    if (!isVideo && !isAudio) { showNotif('Please select an audio or video file', 'error'); return; }
+    selectedAudioFile = file;
+    document.getElementById('audioPreviewWrap').classList.remove('hidden');
+    document.getElementById('audioFileIcon').textContent = isVideo ? '🎬' : '🎵';
+    document.getElementById('audioFileName').textContent = file.name;
+    document.getElementById('audioFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB · ' + (isVideo ? 'Video' : 'Audio');
+    document.getElementById('audioDropContent').innerHTML = `<p class="text-xs text-kx-cyan font-mono">✓ File selected</p>`;
+}
+
+function clearAudio() {
+    selectedAudioFile = null;
+    document.getElementById('audioInput').value = '';
+    document.getElementById('audioPreviewWrap').classList.add('hidden');
+    document.getElementById('audioDropContent').innerHTML = `
+        <div class="text-3xl mb-2">🎵</div>
+        <p class="text-kx-text text-sm font-medium">Drop MP3 / MP4 here or click to browse</p>
+        <p class="text-kx-muted text-xs mt-1">MP3, WAV, OGG, FLAC, MP4, WebM up to 50MB</p>`;
+}
+
+// ── Submit ────────────────────────────────────────
+const GENRE_EMOJIS = { 'hip-hop':'🎤','trap':'🔥','electronic':'⚡','ambient':'🌊','lofi':'☕','rnb':'🌙','other':'🎵' };
+
+function submitTrack() {
+    const title  = document.getElementById('trackTitle').value.trim();
+    const genre  = document.getElementById('trackGenre').value;
+    const aiTool = document.getElementById('trackAiTool').value;
+    const desc   = document.getElementById('trackDesc').value.trim();
+    const artist = document.getElementById('trackArtist').value.trim();
+
+    if (!title)             { showNotif('Please enter a track title', 'error'); return; }
+    if (!selectedAudioFile) { showNotif('Please upload an audio or video file', 'error'); return; }
+
+    showNotif('Saving track…');
+
+    // Cover art → DataURL (small, fine for IDB)
+    const readCover = selectedCoverFile
+        ? new Promise(resolve => { const r = new FileReader(); r.onload = e => resolve(e.target.result); r.readAsDataURL(selectedCoverFile); })
+        : Promise.resolve(null);
+
+    readCover.then(coverUrl => {
+        const id    = Date.now().toString();
+        const track = {
+            id, title, genre, aiTool,
+            description: desc,
+            artist:      artist || 'Anonymous',
+            audioBlob:   selectedAudioFile,   // stored natively in IndexedDB
+            coverDataUrl: coverUrl,
+            fileType:    selectedAudioFile.type,
+            emoji:       GENRE_EMOJIS[genre] || '🎵',
+            plays:       0,
+            date:        new Date().toISOString()
+        };
+
+        saveMeta(track).then(() => {
+            tracks.unshift(track);
+            totalPlays = tracks.reduce((s, t) => s + (t.plays || 0), 0);
+
+            // Reset form
+            document.getElementById('trackTitle').value = '';
+            document.getElementById('trackDesc').value  = '';
+            document.getElementById('trackArtist').value = '';
+            clearCover(); clearAudio();
+            document.getElementById('submitModal').classList.add('hidden');
+            document.body.style.overflow = '';
+
+            renderAll();
+            showNotif('Track published! 🎵✨');
+        }).catch(() => showNotif('Save failed — storage error', 'error'));
+    });
+}
+
+// ── Delete ────────────────────────────────────────
+function deleteTrack(id) {
+    if (!confirm('Remove this track?')) return;
+    if (currentTrackId === id) stopCurrent();
+    if (blobUrls[id]) { URL.revokeObjectURL(blobUrls[id]); delete blobUrls[id]; }
+    dbDelete(id).then(() => {
+        tracks = tracks.filter(t => t.id !== id);
+        totalPlays = tracks.reduce((s, t) => s + (t.plays || 0), 0);
+        renderAll();
+        showNotif('Track removed');
+    });
+}
+
+// ── Drag-and-drop helpers ─────────────────────────
+function dzDragOver(e, el) {
+    e.preventDefault(); e.stopPropagation();
+    el.classList.add('dragover');
+}
+function dzDragLeave(el) {
+    el.classList.remove('dragover');
+}
+function dzDrop(e, type) {
+    e.preventDefault(); e.stopPropagation();
+    const el   = type === 'cover' ? document.getElementById('coverDropZone') : document.getElementById('audioDropZone');
+    el.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    if (type === 'cover') {
+        // Manually set the file input and fire handler
+        const dt = new DataTransfer(); dt.items.add(file);
+        const inp = document.getElementById('coverInput');
+        inp.files = dt.files;
+        handleCoverSelect(inp);
+    } else {
+        const dt = new DataTransfer(); dt.items.add(file);
+        const inp = document.getElementById('audioInput');
+        inp.files = dt.files;
+        handleAudioSelect(inp);
+    }
+}
+
+// ── Escape key closes modal ──────────────────────
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.getElementById('submitModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+});
+
+// ── Notification ──────────────────────────────────
+function showNotif(msg, type = 'success') {
+    const n = document.createElement('div');
+    n.className = `notif${type === 'error' ? ' error' : ''}`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.classList.add('show'), 50);
+    setTimeout(() => { n.classList.remove('show'); setTimeout(() => n.remove(), 300); }, 2800);
+}
+
+function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Intersection observer for reveal animations ──
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Theme Toggle ──────────────────────────────────
+const themeChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('kx_theme_sync') : null;
+
+function applyThemeFromStorage() {
+    try {
+        const saved = localStorage.getItem('kx-theme');
+        const html = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        if (saved === 'light') {
+            html.classList.remove('dark');
+            if (btn) btn.textContent = '🌙';
+        } else {
+            html.classList.add('dark');
+            if (btn) btn.textContent = '☀️';
+        }
+    } catch(e) {}
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+    try {
+        localStorage.setItem('kx-theme', isDark ? 'dark' : 'light');
+        if (themeChannel) themeChannel.postMessage({ theme: isDark ? 'dark' : 'light' });
+    } catch(e) {}
+}
+
+applyThemeFromStorage();
+
+if (themeChannel) {
+    themeChannel.onmessage = (e) => {
+        if (e.data && e.data.theme) {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            if (e.data.theme === 'light') {
+                html.classList.remove('dark');
+                if (btn) btn.textContent = '🌙';
+            } else {
+                html.classList.add('dark');
+                if (btn) btn.textContent = '☀️';
+            }
+        }
+    };
+}
+
+window.addEventListener('pageshow', (e) => {
+    if (e.persisted) applyThemeFromStorage();
+});
+
+// Gothic UI
+(function() {
+    if (localStorage.getItem('kx-gothic') === 'on') {
+        const gBtn = document.getElementById('gothicToggle');
+        if (gBtn) { gBtn.classList.add('gothic-active'); gBtn.title = 'Disable Gothic Theme'; }
+    }
+})();
+
+// ── Init ──────────────────────────────────────────
+loadTracks();
+</script>
+</body>
+</html>

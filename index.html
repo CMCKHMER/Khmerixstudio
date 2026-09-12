@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (function() {
+            var saved = localStorage.getItem('kx-theme');
+            if (saved === 'light') {
+                document.documentElement.classList.add('light');
+            } else {
+                document.documentElement.classList.remove('light');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Creative Minds — KHMERIX Studio. Explore Music, Audio, and AI Prompts. Built with passion in Cambodia.">
+    <meta name="theme-color" content="#050714">
+    <title>Creative Minds — KHMERIX Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Syne', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        /* ─── Theme Tokens ─── */
+        :root {
+            --bg-deep: #050714;
+            --bg-surface: rgba(15, 23, 42, 0.6);
+            --bg-hover: rgba(15, 23, 42, 0.8);
+            --neon-cyan: #00d4ff;
+            --neon-blue: #0ea5e9;
+            --neon-pink: #ff006e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-glow: rgba(56, 189, 248, 0.15);
+            --nav-bg: rgba(5, 7, 20, 0.7);
+        }
+
+        html.light {
+            --bg-deep: #f0f4f8;
+            --bg-surface: rgba(255, 255, 255, 0.7);
+            --bg-hover: rgba(255, 255, 255, 0.9);
+            --neon-cyan: #0284c7;
+            --neon-blue: #0ea5e9;
+            --neon-pink: #0ea5e9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(14, 165, 233, 0.2);
+            --nav-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ─── Background Grid ─── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        html.light .bg-grid {
+            background-image:
+                linear-gradient(rgba(14, 165, 233, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.06) 1px, transparent 1px);
+        }
+
+        /* ─── Floating Orbs ─── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── Mouse Glow Follower ─── */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            left: -500px;
+            top: -500px;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+            mix-blend-mode: screen;
+        }
+        html.light .cursor-glow {
+            background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
+        }
+
+        /* ─── Dynamic Music Notes Canvas ─── */
+        #noteCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ─── Gradient Text ─── */
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 50%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        html.light .gradient-text {
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 50%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ─── 3D Indented Text ─── */
+        .indent-text {
+            background: linear-gradient(to bottom, #bae6fd 0%, #0ea5e9 40%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)) drop-shadow(0 -1px 0 rgba(0,0,0,0.25));
+        }
+        html.light .indent-text {
+            background: linear-gradient(to bottom, #7dd3fc 0%, #0284c7 40%, #0369a1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 1px 0 rgba(255,255,255,0.6)) drop-shadow(0 -1px 0 rgba(0,0,0,0.15));
+        }
+
+        /* ─── Glowing Buttons ─── */
+        .btn-glow-cyan {
+            background: linear-gradient(145deg, #0ea5e9, #00d4ff);
+            box-shadow:
+                8px 8px 20px rgba(14,165,233,0.35),
+                -8px -8px 20px rgba(255,255,255,0.05),
+                inset 2px 2px 4px rgba(255,255,255,0.3),
+                inset -2px -2px 4px rgba(0,0,0,0.1);
+            border: 1px solid rgba(56,189,248,0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow-cyan::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 50%);
+            pointer-events: none;
+        }
+        .btn-glow-cyan:hover {
+            box-shadow:
+                12px 12px 30px rgba(14,165,233,0.45),
+                -12px -12px 30px rgba(255,255,255,0.08),
+                inset 2px 2px 4px rgba(255,255,255,0.4),
+                inset -2px -2px 4px rgba(0,0,0,0.15);
+            transform: translateY(-3px) scale(1.02);
+        }
+        .btn-glow-cyan:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow:
+                inset 4px 4px 10px rgba(0,0,0,0.2),
+                inset -4px -4px 10px rgba(255,255,255,0.1);
+        }
+
+        .btn-glow-pink {
+            background: transparent;
+            border: 2px solid #ff006e;
+            color: #ff006e;
+            box-shadow: 0 0 20px rgba(255,0,110,0.3), inset 0 0 20px rgba(255,0,110,0.05);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-glow-pink:hover {
+            background: rgba(255,0,110,0.1);
+            box-shadow: 0 0 30px rgba(255,0,110,0.5), inset 0 0 30px rgba(255,0,110,0.1);
+            transform: translateY(-3px) scale(1.02);
+        }
+        .btn-glow-pink:active {
+            transform: translateY(1px) scale(0.98);
+        }
+        html.light .btn-glow-pink {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+            box-shadow: 0 0 20px rgba(14,165,233,0.2), inset 0 0 20px rgba(14,165,233,0.05);
+        }
+        html.light .btn-glow-pink:hover {
+            background: rgba(14,165,233,0.1);
+            box-shadow: 0 0 30px rgba(14,165,233,0.4), inset 0 0 30px rgba(14,165,233,0.1);
+        }
+
+        /* ─── Glass Cards ─── */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1);
+        }
+
+        /* ─── Nav ─── */
+        .nav-glass {
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            transition: background 0.3s ease;
+        }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0284c7; }
+
+        /* ─── Focus Visible ─── */
+        *:focus-visible {
+            outline: 2px solid #00d4ff;
+            outline-offset: 2px;
+        }
+        html.light *:focus-visible {
+            outline-color: #0ea5e9;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+        /* ─── Mobile Menu ─── */
+        #mobileMenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        #mobileMenu.open { max-height: 400px; }
+
+        /* ─── Reduced Motion ─── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .bg-grid, .orb, #noteCanvas { display: none; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="antialiased">
+
+<!-- Background FX -->
+<div class="bg-grid"></div>
+<div class="orb w-96 h-96 bg-blue-500/20 -top-48 -right-48"></div>
+<div class="orb w-80 h-80 bg-cyan-500/20 bottom-0 left-0"></div>
+<div class="orb w-64 h-64 bg-purple-500/20 top-1/2 right-1/4"></div>
+
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Dynamic Music Notes Canvas -->
+<<canvas id="noteCanvas" aria-hidden="true"></canvas>
+
+<!-- ═══ NAVIGATION ═══ -->
+<<nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 select-none group" aria-label="KHMERIX Studio Home">
+                <div class="relative w-10 h-10">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                    <div class="relative w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-cyan-400/30 group-hover:border-cyan-400/50 transition-colors shadow-lg">
+                        <span class="font-display font-extrabold text-transparent text-lg bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-600">K</span>
+                    </div>
+                </div>
+                <div class="flex flex-col leading-tight">
+                    <span class="font-display font-extrabold text-lg tracking-wider text-[var(--text-primary)]">KHMERIX</span>
+                    <span class="font-body text-[10px] text-[var(--text-secondary)] tracking-[.2em] uppercase">Studio Suite</span>
+                </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#" class="font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors">Home</a>
+                <a href="studio.html" class="font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors">Audio</a>
+                <a href="studio.html" class="font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors">Prompts</a>
+                <a href="highlights.html" class="font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors">Community</a>
+                <a href="#about" class="font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors">About</a>
+            </div>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-3" id="navActions">
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:bg-[var(--bg-surface)] transition" title="Toggle Theme" aria-label="Toggle light and dark theme">
+                    <span id="themeIcon">☀️</span>
+                </button>
+
+                <!-- Auth buttons (shown when logged out) -->
+                <div id="authButtons" class="hidden sm:flex items-center gap-2">
+                    <button onclick="openAuthModal('signin')" class="px-4 py-2 rounded-full text-sm font-bold text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition">Sign In</button>
+                    <button onclick="openAuthModal('signup')" class="btn-glow-cyan px-5 py-2 rounded-full text-sm font-bold text-white inline-flex items-center gap-2">
+                        <span class="indent-text">Sign Up</span>
+                    </button>
+                </div>
+
+                <!-- User menu (shown when logged in) -->
+                <div id="userMenu" class="hidden items-center gap-2">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full glass-card">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold text-xs font-display" id="userAvatar">K</div>
+                        <span class="text-sm font-medium text-[var(--text-primary)]" id="userName">User</span>
+                    </div>
+                    <button onclick="logout()" class="w-9 h-9 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:bg-red-500/10 hover:text-red-400 hover:border-red-400/30 text-[var(--text-muted)] transition" title="Logout" aria-label="Logout">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-lg border border-[var(--border-glow)] flex items-center justify-center" aria-label="Open menu" aria-expanded="false" id="menuBtn">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden">
+            <div class="py-4 space-y-3 border-t border-[var(--border-glow)]">
+                <a href="#" class="block font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors py-2">Home</a>
+                <a href="studio.html" class="block font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors py-2">Audio</a>
+                <a href="studio.html" class="block font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors py-2">Prompts</a>
+                <a href="highlights.html" class="block font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors py-2">Community</a>
+                <a href="#about" class="block font-body text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] transition-colors py-2">About</a>
+
+                <!-- Mobile auth -->
+                <div id="mobileAuthButtons" class="pt-2 border-t border-[var(--border-glow)] space-y-2">
+                    <button onclick="openAuthModal('signin')" class="w-full text-left px-4 py-2 rounded-xl text-sm font-bold text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] hover:bg-[var(--bg-surface)] transition">Sign In</button>
+                    <button onclick="openAuthModal('signup')" class="btn-glow-cyan w-full px-5 py-2 rounded-full text-sm font-bold text-white inline-flex items-center justify-center gap-2">
+                        <span class="indent-text">Sign Up</span>
+                    </button>
+                </div>
+                <div id="mobileUserMenu" class="hidden pt-2 border-t border-[var(--border-glow)] items-center gap-2 px-4">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold text-xs font-display" id="mobileUserAvatar">K</div>
+                    <span class="text-sm font-medium text-[var(--text-primary)] flex-1" id="mobileUserName">User</span>
+                    <button onclick="logout()" class="text-xs font-bold text-red-400 hover:text-red-300 transition">Logout</button>
+                </div>
+
+                <a href="studio.html" class="btn-glow-cyan px-5 py-2 rounded-full text-sm font-bold text-white inline-flex items-center gap-2 mt-2">
+                    <span class="indent-text">Launch Studio</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="relative z-10 min-h-screen flex items-center pt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left: Text -->
+            <div class="text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span class="text-xs font-mono uppercase tracking-widest text-cyan-400">Creative Minds Cambodia</span>
+                </div>
+
+                <h1 class="font-display font-extrabold text-5xl md:text-7xl leading-[1.05] mb-4">
+                    <span class="block text-[var(--text-primary)]">CREATIVE</span>
+                    <span class="block gradient-text">MINDS</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-lg mb-10 leading-relaxed">
+                    Explore Music, Audio, and AI Prompts. Built with passion in Cambodia 🇰🇭
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="studio.html" class="btn-glow-cyan px-8 py-4 rounded-full text-base font-bold text-white inline-flex items-center gap-2">
+                        <span class="indent-text">Start Creating</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </a>
+                    <a href="highlights.html" class="btn-glow-pink px-8 py-4 rounded-full text-base font-bold inline-flex items-center gap-2">
+                        <span class="indent-text">Listen Now</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </a>
+                    <button onclick="sharePage()" class="btn-glow-cyan px-6 py-4 rounded-full text-base font-bold text-white inline-flex items-center gap-2" title="Share KHMERIX Studio">
+                        <span class="indent-text">Share</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: SVG Illustration -->
+            <div class="relative flex items-center justify-center float-anim">
+                <svg viewBox="0 0 400 400" class="w-full max-w-md drop-shadow-[0_0_40px_rgba(14,165,233,0.3)]">
+                    <defs>
+                        <linearGradient id="gradCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="gradPink" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ff006e;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fb7185;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        <filter id="glowStrong" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Outer glow ring -->
+                    <circle cx="200" cy="180" r="110" fill="url(#gradCyan)" opacity="0.06" filter="url(#glowStrong)" />
+                    <circle cx="200" cy="180" r="90" fill="url(#gradCyan)" opacity="0.08" />
+
+                    <!-- Central figure / avatar silhouette -->
+                    <ellipse cx="200" cy="200" rx="50" ry="65" fill="url(#gradCyan)" opacity="0.2" filter="url(#glow)" />
+                    <path d="M200 145 C175 145, 160 165, 160 185 C160 200, 165 210, 175 215 L175 240 L185 240 L185 250 L215 250 L215 240 L225 240 L225 215 C235 210, 240 200, 240 185 C240 165, 225 145, 200 145 Z" fill="url(#gradCyan)" opacity="0.85" />
+
+                    <!-- Face suggestion -->
+                    <circle cx="188" cy="180" r="3" fill="#050714" opacity="0.6" />
+                    <circle cx="212" cy="180" r="3" fill="#050714" opacity="0.6" />
+                    <path d="M195 195 Q200 200 205 195" fill="none" stroke="#050714" stroke-width="2" opacity="0.5" stroke-linecap="round" />
+
+                    <!-- Headphones -->
+                    <path d="M155 185 C155 140, 245 140, 245 185" fill="none" stroke="url(#gradCyan)" stroke-width="4" stroke-linecap="round" />
+                    <rect x="148" y="175" width="14" height="32" rx="7" fill="url(#gradCyan)" opacity="0.9" filter="url(#glow)" />
+                    <rect x="238" y="175" width="14" height="32" rx="7" fill="url(#gradCyan)" opacity="0.9" filter="url(#glow)" />
+
+                    <!-- Brain icon (top right) -->
+                    <circle cx="290" cy="90" r="28" fill="rgba(14,165,233,0.15)" stroke="url(#gradCyan)" stroke-width="2" />
+                    <path d="M278 85 Q290 72 302 85 Q290 98 278 85" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="285" cy="82" r="2" fill="#00d4ff" />
+                    <circle cx="295" cy="82" r="2" fill="#00d4ff" />
+
+                    <!-- Lightbulb (right) -->
+                    <circle cx="340" cy="155" r="22" fill="rgba(255,0,110,0.12)" stroke="url(#gradPink)" stroke-width="2" />
+                    <path d="M332 145 L332 152 M340 140 L340 152 M348 145 L348 152" stroke="url(#gradPink)" stroke-width="2" stroke-linecap="round" />
+                    <path d="M334 158 Q340 164 346 158" fill="none" stroke="url(#gradPink)" stroke-width="2" />
+                    <circle cx="340" cy="150" r="4" fill="url(#gradPink)" filter="url(#glow)" />
+
+                    <!-- Vinyl record (bottom left) -->
+                    <circle cx="105" cy="290" r="32" fill="none" stroke="url(#gradCyan)" stroke-width="2" opacity="0.7" />
+                    <circle cx="105" cy="290" r="24" fill="none" stroke="url(#gradCyan)" stroke-width="1" opacity="0.5" />
+                    <circle cx="105" cy="290" r="8" fill="url(#gradCyan)" opacity="0.6" filter="url(#glow)" />
+
+                    <!-- Sound waves -->
+                    <path d="M65 195 Q85 175 105 195 T145 195" fill="none" stroke="url(#gradCyan)" stroke-width="2" opacity="0.4" stroke-linecap="round" />
+                    <path d="M255 285 Q275 265 295 285 T335 285" fill="none" stroke="url(#gradPink)" stroke-width="2" opacity="0.3" stroke-linecap="round" />
+
+                    <!-- Music notes -->
+                    <text x="310" y="265" fill="url(#gradCyan)" font-size="22" opacity="0.8" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif">♪</text>
+                    <text x="85" y="125" fill="url(#gradPink)" font-size="18" opacity="0.7" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif">♫</text>
+                    <text x="320" y="220" fill="url(#gradCyan)" font-size="14" opacity="0.5" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif">♩</text>
+
+                    <!-- Connection lines -->
+                    <line x1="200" y1="180" x2="290" y2="90" stroke="#0ea5e9" stroke-width="1" opacity="0.25" stroke-dasharray="4 4" />
+                    <line x1="200" y1="180" x2="340" y2="155" stroke="#ff006e" stroke-width="1" opacity="0.2" stroke-dasharray="4 4" />
+                    <line x1="200" y1="180" x2="105" y2="290" stroke="#00d4ff" stroke-width="1" opacity="0.25" stroke-dasharray="4 4" />
+
+                    <!-- Waveform bars at bottom -->
+                    <g transform="translate(150, 330)">
+                        <rect x="0" y="10" width="5" height="25" rx="2.5" fill="url(#gradCyan)" opacity="0.6" />
+                        <rect x="10" y="0" width="5" height="45" rx="2.5" fill="url(#gradCyan)" opacity="0.8" />
+                        <rect x="20" y="15" width="5" height="20" rx="2.5" fill="url(#gradCyan)" opacity="0.5" />
+                        <rect x="30" y="-5" width="5" height="55" rx="2.5" fill="url(#gradPink)" opacity="0.6" />
+                        <rect x="40" y="8" width="5" height="32" rx="2.5" fill="url(#gradCyan)" opacity="0.7" />
+                        <rect x="50" y="2" width="5" height="42" rx="2.5" fill="url(#gradCyan)" opacity="0.8" />
+                        <rect x="60" y="18" width="5" height="18" rx="2.5" fill="url(#gradPink)" opacity="0.5" />
+                        <rect x="70" y="5" width="5" height="38" rx="2.5" fill="url(#gradCyan)" opacity="0.7" />
+                        <rect x="80" y="12" width="5" height="24" rx="2.5" fill="url(#gradCyan)" opacity="0.6" />
+                    </g>
+
+                    <!-- Floating particles -->
+                    <circle cx="60" cy="100" r="3" fill="#00d4ff" opacity="0.4" />
+                    <circle cx="350" cy="250" r="2" fill="#ff006e" opacity="0.3" />
+                    <circle cx="280" cy="320" r="2.5" fill="#0ea5e9" opacity="0.5" />
+                    <circle cx="130" cy="60" r="2" fill="#fb7185" opacity="0.4" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="relative z-10 py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Everything You Need</h2>
+            <p class="text-[var(--text-secondary)] max-w-xl mx-auto text-lg">Professional audio processing meets AI prompt engineering in one seamless studio.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-card p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-2xl mb-5">🎛️</div>
+                <h3 class="font-display font-bold text-lg mb-2">Audio Converter</h3>
+                <p class="text-sm text-[var(--text-secondary)] leading-relaxed">Real-time EQ, compressor, reverb, and waveform visualization. Export WAV with custom quality settings.</p>
+                <a href="studio.html" class="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 mt-4 font-medium transition">
+                    Open Audio <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="glass-card p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-2xl mb-5">⚡</div>
+                <h3 class="font-display font-bold text-lg mb-2">Prompt Lab</h3>
+                <p class="text-sm text-[var(--text-secondary)] leading-relaxed">Generate AI prompts for music, images, video, and education. Enhance with Claude API and Vision.</p>
+                <a href="studio.html" class="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 mt-4 font-medium transition">
+                    Open Prompts <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="glass-card p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-cyan-500/20 flex items-center justify-center text-2xl mb-5">🎵</div>
+                <h3 class="font-display font-bold text-lg mb-2">Community</h3>
+                <p class="text-sm text-[var(--text-secondary)] leading-relaxed">Share and discover AI-generated tracks. Upload, play, and showcase your creations with the world.</p>
+                <a href="highlights.html" class="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 mt-4 font-medium transition">
+                    Browse Tracks <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ COMMUNITY TRACKS ═══ -->
+<section id="tracks" class="relative z-10 py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6">
+                <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
+                <span class="text-xs font-mono uppercase tracking-widest text-pink-400">Community Uploads</span>
+            </div>
+            <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Latest Tracks</h2>
+            <p class="text-[var(--text-secondary)] max-w-xl mx-auto text-lg">Discover and share AI-generated music from the KHMERIX community.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="tracksGrid">
+            <!-- Demo tracks rendered dynamically by JS -->
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="highlights.html" class="btn-glow-pink px-8 py-3.5 rounded-full text-base font-bold inline-flex items-center gap-2">
+                <span class="indent-text">Browse All Tracks</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about" class="relative z-10 py-24 px-4">
+    <div class="max-w-4xl mx-auto glass-card p-10 md:p-16 text-center">
+        <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Built in Cambodia 🇰🇭</h2>
+        <p class="text-[var(--text-secondary)] leading-relaxed mb-8 max-w-2xl mx-auto text-lg">
+            KHMERIX Studio is a creative toolkit built for artists, producers, and prompt engineers.
+            Process audio, generate AI prompts, and share your work — all in the browser, no installation needed.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="studio.html" class="btn-glow-cyan px-8 py-3.5 rounded-full text-base font-bold text-white inline-flex items-center gap-2">
+                <span class="indent-text">Open Studio</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </a>
+            <a href="highlights.html" class="btn-glow-pink px-8 py-3.5 rounded-full text-base font-bold inline-flex items-center gap-2">
+                <span class="indent-text">Browse Community</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ SIGN UP ═══ -->
+<section id="signup" class="relative z-10 py-24 px-4">
+    <div class="max-w-3xl mx-auto glass-card p-10 md:p-16 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/20 mb-6">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span class="text-xs font-mono uppercase tracking-widest text-cyan-400">Early Access</span>
+        </div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Join KHMERIX Studio</h2>
+        <p class="text-[var(--text-secondary)] leading-relaxed mb-10 max-w-xl mx-auto text-lg">
+            Be the first to access new AI audio tools, prompt labs, and community features.
+            No spam — just creative updates from Cambodia 🇰🇭
+        </p>
+        <form id="signupForm" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onsubmit="handleSignup(event)">
+            <input
+                type="email"
+                id="signupEmail"
+                placeholder="Enter your email"
+                required
+                class="flex-1 px-6 py-4 rounded-full bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition-all font-body text-sm"
+            >
+            <button type="submit" class="btn-glow-cyan px-8 py-4 rounded-full text-base font-bold text-white inline-flex items-center justify-center gap-2 whitespace-nowrap">
+                <span class="indent-text">Sign Up</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </button>
+        </form>
+        <p id="signupMessage" class="mt-4 text-sm font-medium hidden"></p>
+        <p class="mt-6 text-xs text-[var(--text-muted)]">By signing up, you agree to receive occasional updates. Unsubscribe anytime.</p>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<<footer class="relative z-10 border-t border-[var(--border-glow)] py-10 px-4 mt-10">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm font-display">K</div>
+            <span class="font-display font-bold text-sm">KHMERIX Studio</span>
+        </div>
+
+        <div class="flex gap-6 text-sm text-[var(--text-muted)]">
+            <a href="studio.html" class="hover:text-[var(--neon-cyan)] transition">Studio</a>
+            <a href="highlights.html" class="hover:text-[var(--neon-cyan)] transition">Community</a>
+            <a href="https://github.com/Khmerix/Khmerixstudio" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--neon-cyan)] transition">GitHub</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="https://www.youtube.com/@creativemindscambodia" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:border-cyan-400 hover:text-cyan-400 text-[var(--text-muted)] transition" title="YouTube" aria-label="YouTube">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/khmerix/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:border-cyan-400 hover:text-cyan-400 text-[var(--text-muted)] transition" title="Instagram" aria-label="Instagram">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </a>
+            <a href="https://www.tiktok.com/@creativemindscambodia1" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:border-cyan-400 hover:text-cyan-400 text-[var(--text-muted)] transition" title="TikTok" aria-label="TikTok">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.16 15a6.34 6.34 0 0 0 10.86 4.46V12.8A8.28 8.28 0 0 0 19.59 15V11.5a4.83 4.83 0 0 1-3.77-1.21V6.69h3.77z"/></svg>
+            </a>
+            <a href="https://github.com/Khmerix/Khmerixstudio" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg border border-[var(--border-glow)] flex items-center justify-center hover:border-cyan-400 hover:text-cyan-400 text-[var(--text-muted)] transition" title="GitHub" aria-label="GitHub">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+        </div>
+
+        <p class="text-xs text-[var(--text-muted)] font-mono">© 2026 KHMERIX Studio · Made with ♥ in Cambodia</p>
+    </div>
+</footer>
+
+<!-- ═══ AUTH MODALS ═══ -->
+<div id="authOverlay" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden items-center justify-center" onclick="closeAuthModal(event)">
+  <div class="glass-card w-full max-w-md p-8 relative mx-4" onclick="event.stopPropagation()">
+    <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-lg border border-[var(--border-glow)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--neon-cyan)] transition" aria-label="Close">✕</button>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6 p-1 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)]">
+      <button id="tabSignIn" onclick="switchAuthTab('signin')" class="flex-1 py-2 rounded-lg text-sm font-bold transition bg-cyan-500/20 text-cyan-400">Sign In</button>
+      <button id="tabSignUp" onclick="switchAuthTab('signup')" class="flex-1 py-2 rounded-lg text-sm font-bold transition text-[var(--text-muted)] hover:text-[var(--text-primary)]">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="signInForm" onsubmit="handleSignIn(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1.5">Email</label>
+        <input type="email" id="siEmail" required class="w-full px-4 py-3 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition font-body text-sm" placeholder="you@example.com">
+      </div>
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1.5">Password</label>
+        <input type="password" id="siPassword" required minlength="8" class="w-full px-4 py-3 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition font-body text-sm" placeholder="••••••••">
+      </div>
+      <p id="siError" class="text-xs text-red-400 hidden"></p>
+      <button type="submit" id="siBtn" class="btn-glow-cyan w-full py-3 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2">
+        <span class="indent-text">Sign In</span>
+      </button>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signUpForm" onsubmit="handleSignUp(event)" class="space-y-4 hidden">
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1.5">Name</label>
+        <input type="text" id="suName" class="w-full px-4 py-3 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition font-body text-sm" placeholder="Your name">
+      </div>
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1.5">Email</label>
+        <input type="email" id="suEmail" required class="w-full px-4 py-3 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition font-body text-sm" placeholder="you@example.com">
+      </div>
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1.5">Password</label>
+        <input type="password" id="suPassword" required minlength="8" class="w-full px-4 py-3 rounded-xl bg-[var(--bg-deep)] border border-[var(--border-glow)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition font-body text-sm" placeholder="Min 8 characters">
+      </div>
+      <p id="suError" class="text-xs text-red-400 hidden"></p>
+      <button type="submit" id="suBtn" class="btn-glow-cyan w-full py-3 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2">
+        <span class="indent-text">Create Account</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ─── Mobile Menu ─── */
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('menuBtn');
+    const isOpen = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+}
+
+/* ─── Theme Toggle ─── */
+const themeChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('kx_theme_sync') : null;
+
+function applyThemeFromStorage() {
+    try {
+        const saved = localStorage.getItem('kx-theme');
+        const html = document.documentElement;
+        const icon = document.getElementById('themeIcon');
+        if (saved === 'light') {
+            html.classList.add('light');
+            if (icon) icon.textContent = '🌙';
+        } else {
+            html.classList.remove('light');
+            if (icon) icon.textContent = '☀️';
+        }
+    } catch(e) {}
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const icon = document.getElementById('themeIcon');
+    const isLight = html.classList.toggle('light');
+    icon.textContent = isLight ? '🌙' : '☀️';
+    try {
+        localStorage.setItem('kx-theme', isLight ? 'light' : 'dark');
+        if (themeChannel) themeChannel.postMessage({ theme: isLight ? 'light' : 'dark' });
+    } catch(e) {}
+}
+
+applyThemeFromStorage();
+
+if (themeChannel) {
+    themeChannel.onmessage = (e) => {
+        if (e.data && e.data.theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (e.data.theme === 'light') {
+                html.classList.add('light');
+                if (icon) icon.textContent = '🌙';
+            } else {
+                html.classList.remove('light');
+                if (icon) icon.textContent = '☀️';
+            }
+        }
+    };
+}
+
+window.addEventListener('pageshow', (e) => {
+    if (e.persisted) applyThemeFromStorage();
+});
+
+/* ─── Cursor Glow Follower ─── */
+(function() {
+    const glow = document.getElementById('cursorGlow');
+    let mouseX = -500, mouseY = -500;
+    let glowX = -500, glowY = -500;
+
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    document.addEventListener('mouseleave', () => {
+        mouseX = -500;
+        mouseY = -500;
+    });
+
+    function animateGlow() {
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        glow.style.left = glowX + 'px';
+        glow.style.top = glowY + 'px';
+        requestAnimationFrame(animateGlow);
+    }
+    animateGlow();
+})();
+
+/* ─── Dynamic Music Notes Canvas ─── */
+(function() {
+    const canvas = document.getElementById('noteCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr;
+    let animId;
+
+    const noteChars = ['♪','♫','♩','♬','♭','♯','𝄞','𝄢'];
+    const palette = ['#0ea5e9', '#00d4ff', '#38bdf8', '#ff006e', '#fb7185', '#8b5cf6'];
+
+    function randFloat(min, max) { return Math.random() * (max - min) + min; }
+    function pickColor() { return palette[Math.floor(Math.random() * palette.length)]; }
+    function pickNote() { return noteChars[Math.floor(Math.random() * noteChars.length)]; }
+
+    function resize() {
+        dpr = window.devicePixelRatio || 1;
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    let mouse = { x: -1000, y: -1000 };
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    const notes = [];
+    const NOTE_COUNT = 35;
+
+    function initNotes() {
+        notes.length = 0;
+        for (let i = 0; i < NOTE_COUNT; i++) {
+            notes.push({
+                x: randFloat(0, W),
+                y: randFloat(0, H),
+                size: randFloat(14, 28),
+                color: pickColor(),
+                alpha: randFloat(0.06, 0.18),
+                vx: randFloat(-0.3, 0.3),
+                vy: randFloat(-0.4, 0.1),
+                note: pickNote(),
+                rot: randFloat(0, Math.PI * 2),
+                rotSpeed: randFloat(-0.005, 0.005),
+                twinkle: randFloat(0.003, 0.01),
+                phase: randFloat(0, Math.PI * 2),
+            });
+        }
+    }
+
+    let time = 0;
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        notes.forEach(n => {
+            const dx = n.x - mouse.x;
+            const dy = n.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150 && dist > 0) {
+                const force = (150 - dist) / 150 * 2;
+                n.vx += (dx / dist) * force * 0.02;
+                n.vy += (dy / dist) * force * 0.02;
+            }
+
+            n.vx *= 0.99;
+            n.vy *= 0.99;
+
+            n.x += n.vx + Math.sin(time * 0.001 + n.phase) * 0.1;
+            n.y += n.vy + Math.cos(time * 0.001 + n.phase) * 0.05;
+            n.rot += n.rotSpeed;
+
+            if (n.x < -40) n.x = W + 40;
+            if (n.x > W + 40) n.x = -40;
+            if (n.y < -40) n.y = H + 40;
+            if (n.y > H + 40) n.y = -40;
+
+            const tw = 0.5 + 0.5 * Math.sin(time * n.twinkle + n.phase);
+            const a = n.alpha * tw;
+
+            ctx.save();
+            ctx.translate(n.x, n.y);
+            ctx.rotate(n.rot);
+            ctx.font = `${n.size}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = n.color;
+            ctx.globalAlpha = a;
+            ctx.fillText(n.note, 0, 0);
+            ctx.restore();
+        });
+
+        time++;
+        animId = requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => {
+        resize();
+        notes.forEach(n => {
+            n.x = Math.min(n.x, W);
+            n.y = Math.min(n.y, H);
+        });
+    });
+    resize();
+    initNotes();
+    draw();
+})();
+
+/* ─── Share Track ─── */
+function shareTrack(title, artist, genre) {
+    const shareData = {
+        title: title + ' — KHMERIX Studio',
+        text: 'Listen to "' + title + '" by ' + artist + ' (' + genre + ') on KHMERIX Studio 🇰🇭',
+        url: window.location.href + '?track=' + encodeURIComponent(title)
+    };
+    if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(shareData.text + ' ' + shareData.url).then(() => {
+            showToast('Track link copied to clipboard!');
+        }).catch(() => {
+            showToast('Unable to share track');
+        });
+    }
+}
+
+/* ─── Play Track ─── */
+function playTrack(title, artist) {
+    showToast('▶ Now playing: ' + title + ' by ' + artist);
+}
+
+/* ─── Share Page ─── */
+function sharePage() {
+    const shareData = {
+        title: 'KHMERIX Studio — Creative Minds Cambodia',
+        text: 'Explore Music, Audio, and AI Prompts. Built with passion in Cambodia 🇰🇭',
+        url: window.location.href
+    };
+    if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showToast('Link copied to clipboard!');
+        }).catch(() => {
+            showToast('Unable to copy link');
+        });
+    }
+}
+
+/* ─── Toast Notification ─── */
+function showToast(message) {
+    let toast = document.getElementById('kx-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'kx-toast';
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 24px;border-radius:9999px;background:var(--bg-surface);backdrop-filter:blur(20px);border:1px solid var(--border-glow);color:var(--text-primary);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;opacity:0;transition:all 0.3s ease;z-index:9999;pointer-events:none;white-space:nowrap;';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2500);
+}
+
+/* ─── Newsletter Sign Up Handler ─── */
+function handleSignup(e) {
+    e.preventDefault();
+    const email = document.getElementById('signupEmail').value.trim();
+    const msg = document.getElementById('signupMessage');
+    const btn = e.target.querySelector('button[type="submit"]');
+    const originalHTML = btn.innerHTML;
+
+    if (!email || !email.includes('@')) {
+        msg.textContent = 'Please enter a valid email address.';
+        msg.className = 'mt-4 text-sm font-medium text-red-400';
+        msg.classList.remove('hidden');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="indent-text">Joining...</span><svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>';
+
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        document.getElementById('signupEmail').value = '';
+        msg.textContent = '🎉 Welcome to KHMERIX Studio! Check your inbox for confirmation.';
+        msg.className = 'mt-4 text-sm font-medium text-cyan-400';
+        msg.classList.remove('hidden');
+        showToast('Successfully signed up!');
+    }, 1500);
+}
+
+/* ═══════════════════════════════════════
+   AUTH SYSTEM
+   ═══════════════════════════════════════ */
+const API_BASE = 'http://localhost:3000/api'; // CHANGE TO YOUR DEPLOYED API
+
+function getToken() {
+    try { return localStorage.getItem('kx_token'); } catch(e) { return null; }
+}
+function setToken(t) {
+    try { localStorage.setItem('kx_token', t); } catch(e) {}
+}
+function clearToken() {
+    try { localStorage.removeItem('kx_token'); } catch(e) {}
+}
+
+function renderAuthState() {
+    const token = getToken();
+    const authBtns = document.getElementById('authButtons');
+    const userMenu = document.getElementById('userMenu');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    const mobileAuth = document.getElementById('mobileAuthButtons');
+    const mobileUser = document.getElementById('mobileUserMenu');
+    const mobileName = document.getElementById('mobileUserName');
+    const mobileAvatar = document.getElementById('mobileUserAvatar');
+
+    if (!authBtns || !userMenu) return;
+
+    if (token) {
+        authBtns.classList.add('hidden');
+        authBtns.classList.remove('flex');
+        userMenu.classList.remove('hidden');
+        userMenu.classList.add('flex');
+        if (mobileAuth) mobileAuth.classList.add('hidden');
+        if (mobileUser) { mobileUser.classList.remove('hidden'); mobileUser.classList.add('flex'); }
+
+        fetch(`${API_BASE}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(user => {
+            const display = user.name || user.email.split('@')[0];
+            const initial = (user.name || user.email).charAt(0).toUpperCase();
+            if (userName) userName.textContent = display;
+            if (userAvatar) userAvatar.textContent = initial;
+            if (mobileName) mobileName.textContent = display;
+            if (mobileAvatar) mobileAvatar.textContent = initial;
+        })
+        .catch(() => logout());
+    } else {
+        authBtns.classList.remove('hidden');
+        authBtns.classList.add('flex');
+        userMenu.classList.add('hidden');
+        userMenu.classList.remove('flex');
+        if (mobileAuth) mobileAuth.classList.remove('hidden');
+        if (mobileUser) { mobileUser.classList.add('hidden'); mobileUser.classList.remove('flex'); }
+    }
+}
+
+function logout() {
+    clearToken();
+    renderAuthState();
+    showToast('Signed out successfully');
+}
+
+/* ─── Auth Modal ─── */
+function openAuthModal(tab) {
+    const overlay = document.getElementById('authOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+    switchAuthTab(tab || 'signin');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAuthModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    const overlay = document.getElementById('authOverlay');
+    if (!overlay) return;
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+    document.body.style.overflow = '';
+    ['siError','suError'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ''; el.classList.add('hidden'); }
+    });
+}
+
+function switchAuthTab(tab) {
+    const siForm = document.getElementById('signInForm');
+    const suForm = document.getElementById('signUpForm');
+    const tabSi = document.getElementById('tabSignIn');
+    const tabSu = document.getElementById('tabSignUp');
+
+    if (tab === 'signin') {
+        siForm.classList.remove('hidden');
+        suForm.classList.add('hidden');
+        tabSi.className = 'flex-1 py-2 rounded-lg text-sm font-bold transition bg-cyan-500/20 text-cyan-400';
+        tabSu.className = 'flex-1 py-2 rounded-lg text-sm font-bold transition text-[var(--text-muted)] hover:text-[var(--text-primary)]';
+    } else {
+        siForm.classList.add('hidden');
+        suForm.classList.remove('hidden');
+        tabSu.className = 'flex-1 py-2 rounded-lg text-sm font-bold transition bg-cyan-500/20 text-cyan-400';
+        tabSi.className = 'flex-1 py-2 rounded-lg text-sm font-bold transition text-[var(--text-muted)] hover:text-[var(--text-primary)]';
+    }
+}
+
+function setBtnLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    if (loading) {
+        btn.dataset.original = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>';
+    } else if (btn.dataset.original) {
+        btn.innerHTML = btn.dataset.original;
+    }
+}
+
+function showAuthError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+}
+
+/* ─── Sign In Handler ─── */
+async function handleSignIn(e) {
+    e.preventDefault();
+    const email = document.getElementById('siEmail').value.trim();
+    const password = document.getElementById('siPassword').value;
+    const errEl = document.getElementById('siError');
+    if (errEl) errEl.classList.add('hidden');
+
+    setBtnLoading('siBtn', true);
+    try {
+        const res = await fetch(`${API_BASE}/auth/signin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Sign in failed');
+
+        setToken(data.token);
+        renderAuthState();
+        closeAuthModal();
+        showToast(`Welcome back, ${data.user.name || data.user.email}!`);
+    } catch (err) {
+        showAuthError('siError', err.message);
+    } finally {
+        setBtnLoading('siBtn', false);
+    }
+}
+
+/* ─── Sign Up Handler ─── */
+async function handleSignUp(e) {
+    e.preventDefault();
+    const name = document.getElementById('suName').value.trim();
+    const email = document.getElementById('suEmail').value.trim();
+    const password = document.getElementById('suPassword').value;
+    const errEl = document.getElementById('suError');
+    if (errEl) errEl.classList.add('hidden');
+
+    if (password.length < 8) {
+        showAuthError('suError', 'Password must be at least 8 characters');
+        return;
+    }
+
+    setBtnLoading('suBtn', true);
+    try {
+        const res = await fetch(`${API_BASE}/auth/signup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, name: name || undefined })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Sign up failed');
+
+        setToken(data.token);
+        renderAuthState();
+        closeAuthModal();
+        showToast('Account created! Welcome to KHMERIX Studio.');
+    } catch (err) {
+        showAuthError('suError', err.message);
+    } finally {
+        setBtnLoading('suBtn', false);
+    }
+}
+
+/* ═══════════════════════════════════════
+   DYNAMIC TRACKS SYNC
+   ═══════════════════════════════════════ */
+const DEMO_TRACKS = [
+    { title: 'Neon Dreams', artist: 'KHMERIX Beats', duration: '3:42', emoji: '🎧', tags: ['Synthwave','AI Generated'], color: 'cyan' },
+    { title: 'Phnom Penh Nights', artist: 'CreativeMinds', duration: '4:15', emoji: '🎹', tags: ['Lo-Fi','Chill'], color: 'pink' },
+    { title: 'Angkor Sunrise', artist: 'TempleSounds', duration: '2:58', emoji: '🎸', tags: ['Ambient','World'], color: 'amber' },
+    { title: 'Khmer Trap 808', artist: 'BeatForge', duration: '3:21', emoji: '🥁', tags: ['Trap','Drill'], color: 'emerald' },
+    { title: 'Rice Field Echoes', artist: 'MekongWave', duration: '3:55', emoji: '🎤', tags: ['Hip Hop','Boom Bap'], color: 'violet' },
+    { title: 'Tuk-Tuk Bass', artist: 'StreetPulse', duration: '2:47', emoji: '🎺', tags: ['EDM','House'], color: 'rose' }
+];
+
+const COLOR_MAP = {
+    cyan:    { from: 'from-cyan-500/20', to: 'to-blue-500/20', border: 'border-cyan-400/20', text: 'text-cyan-400', bg: 'bg-cyan-500/10', hover: 'hover:bg-cyan-500/30' },
+    pink:    { from: 'from-pink-500/20', to: 'to-purple-500/20', border: 'border-pink-400/20', text: 'text-pink-400', bg: 'bg-pink-500/10', hover: 'hover:bg-pink-500/30' },
+    amber:   { from: 'from-amber-500/20', to: 'to-orange-500/20', border: 'border-amber-400/20', text: 'text-amber-400', bg: 'bg-amber-500/10', hover: 'hover:bg-amber-500/30' },
+    emerald: { from: 'from-emerald-500/20', to: 'to-teal-500/20', border: 'border-emerald-400/20', text: 'text-emerald-400', bg: 'bg-emerald-500/10', hover: 'hover:bg-emerald-500/30' },
+    violet:  { from: 'from-violet-500/20', to: 'to-indigo-500/20', border: 'border-violet-400/20', text: 'text-violet-400', bg: 'bg-violet-500/10', hover: 'hover:bg-violet-500/30' },
+    rose:    { from: 'from-rose-500/20', to: 'to-red-500/20', border: 'border-rose-400/20', text: 'text-rose-400', bg: 'bg-rose-500/10', hover: 'hover:bg-rose-500/30' }
+};
+
+function buildTrackCard(track) {
+    const c = COLOR_MAP[track.color] || COLOR_MAP.cyan;
+    const tagEls = track.tags.map((t, i) => {
+        const palette = ['cyan','pink','amber','emerald','violet','rose'];
+        const p = COLOR_MAP[palette[i % palette.length]];
+        return `<span class="px-2 py-1 rounded-md ${p.bg} ${p.text} text-xs font-mono">${t}</span>`;
+    }).join('');
+
+    return `
+    <div class="glass-card p-6 group">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${c.from} ${c.to} flex items-center justify-center text-xl">${track.emoji || '🎵'}</div>
+            <span class="text-xs font-mono text-[var(--text-muted)]">${track.duration || '--:--'}</span>
+        </div>
+        <h3 class="font-display font-bold text-lg mb-1">${track.title}</h3>
+        <p class="text-sm text-[var(--text-secondary)] mb-3">by ${track.artist}</p>
+        <div class="flex items-center gap-2 mb-4 flex-wrap">${tagEls}</div>
+        <div class="flex items-center gap-3">
+            <button onclick="playTrack('${track.title.replace(/'/g,"\\'")}', '${track.artist.replace(/'/g,"\\'")}')" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r ${c.from} ${c.to} border ${c.border} ${c.text} text-sm font-bold ${c.hover} transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                Play
+            </button>
+            <button onclick="shareTrack('${track.title.replace(/'/g,"\\'")}', '${track.artist.replace(/'/g,"\\'")}', '${track.tags[0] || 'Music'}')" class="w-10 h-10 rounded-xl border border-[var(--border-glow)] flex items-center justify-center text-[var(--text-secondary)] hover:${c.text} hover:${c.border} transition" title="Share track">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            </button>
+        </div>
+    </div>`;
+}
+
+function renderTracks() {
+    const grid = document.getElementById('tracksGrid');
+    if (!grid) return;
+
+    let uploads = [];
+    try {
+        uploads = JSON.parse(localStorage.getItem('khmerix_uploads') || '[]');
+    } catch(e) {}
+
+    // If you have real uploads, show them; otherwise show demo tracks
+    const tracks = uploads.length > 0 ? uploads : DEMO_TRACKS;
+    grid.innerHTML = tracks.map(buildTrackCard).join('');
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+    renderAuthState();
+    renderTracks();
+});
+</script>
+
+</body>
+</html>
